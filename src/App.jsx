@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createHashRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
+import Layout from "./component/Layout/Layout";
+import Login from "./component/Login/Login";
+import Signup from "./component/Signup/Signup";
+import Forgotten from "./component/Forgotten/Forgotten";
+import Verify from "./component/Verify/Verify";
+import About from "./component/About/About";
+import Change from "./component/Change password/changePassword";
+import Doctor from "./component/Doctor/Doctor";
+import AppGlobalProvider from "./context/GlobalContext";
+import AuthenticateProvider from "./context/AutheContext";
+import HomePage from "./component/HomePage/HomePage";
+import Contact from "./component/Contact/Contact";
+import Doctorinfo from "./component/Doctorinfo/Doctorinfo";
+import ScrollToTop from "./context/ScrollToTop/ScrollToTop";
+import Field from "./component/Field/Field";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const queryClient = new QueryClient();
+
+  const myRouter = createHashRouter([
+    {
+      path: "/",
+      element: (
+        <>
+          <ScrollToTop />
+          <Layout />
+        </>
+      ),
+      children: [
+        { path: "/", element: <Login /> },
+        { path: "/Login", element: <Login /> },
+        { path: "/Sign-up", element: <Signup /> },
+        { path: "/Forgot-pass", element: <Forgotten /> },
+        { path: "/Verify", element: <Verify /> },
+        { path: "/Change-pass", element: <Change /> },
+        { path: "/About-us", element: <About /> },
+        { path: "/Find-a-doctor", element: <Doctor /> },
+        { path: "/Home", element: <HomePage /> },
+        { path: "/Contact-us", element: <Contact /> },
+        { path: "/Doctor-Info", element: <Doctorinfo /> },
+        { path: "/Field", element: <Field /> },
+      ],
+    },
+  ]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <QueryClientProvider client={queryClient}>
+      <AuthenticateProvider>
+        <AppGlobalProvider>
+          <RouterProvider router={myRouter}></RouterProvider>
+        </AppGlobalProvider>
+      </AuthenticateProvider>
+    </QueryClientProvider>
+  );
 }
-
-export default App
